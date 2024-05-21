@@ -14,6 +14,7 @@ LD := ld.lld
 COPIER := llvm-objcopy
 
 CFLAGS := -Wall -O2 -ffreestanding -nostdinc -nostdlib -I $(INTF_DIR)
+AFLAGS := -f elf64
 LFLAGS := -nostdlib
 OFLAGS := -O binary
 
@@ -27,3 +28,7 @@ X86_64_OBJ := $(X86_64_IMPL_SRC:.c=.o) $(X86_64_BOOT_SRC:.asm=.o)
 
 $(TARGET): $(X86_64_OBJ)
 	mkdir -p $(DIST_DIR) && .
+
+%.o: %.asm
+	mkdir -p $(BUILD_DIR)/x86_64 && \
+	$(AS) $(AFLAGS) $< -o $@
