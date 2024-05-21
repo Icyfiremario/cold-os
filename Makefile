@@ -1,4 +1,4 @@
-.PHONY: clean realclean x86_64
+.PHONY: clean realclean
 
 TARGET := kernel.iso
 
@@ -27,4 +27,3 @@ X86_64_OBJ := $(X86_64_IMPL_SRC:.c=.o) $(X86_64_BOOT_SRC:.asm=.o)
 
 $(TARGET): $(X86_64_OBJ)
 	mkdir -p $(DIST_DIR) && .
-	$(LD) -m x86-64elf
