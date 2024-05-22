@@ -52,5 +52,5 @@ realclean: clean
 	@rm -f $(TARGET)
 	@echo Removed kernel iso
 
-run:
+run: $(TARGET)
 	qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso
