@@ -6,6 +6,6 @@ Cold OS is a custom OS written in C and assembly compiled via clang and nasm. It
 
 ## Roadmap
 
-[] Write IDT
-[] Write filesystem
-[] Add arch targeting to Makefile
+- [ ] Write IDT
+- [ ] Write filesystem
+- [ ] Add arch targeting to Makefile
