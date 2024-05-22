@@ -1,24 +1,24 @@
 .PHONY: clean realclean run
 
-TARGET := kernel.iso
-ELF := kernel.bin
-
 BUILD_DIR := build
+DIST_DIR := dist/x86_64
 IMPL_DIR := src/impl
 INTF_DIR := src/intf
 
-DIST_DIR := dist/x86_64
+TARGET := $(DIST_DIR)/kernel.iso
+ELF := $(BUILD_DIR)/kernel.bin
 
 CC := clang
 AS := nasm
 LD := ld.lld
 COPIER := llvm-objcopy
-GRUB := 
+GRUB := grub-mkrescue
 
-CFLAGS := -Wall -O2 -ffreestanding -nostdinc -nostdlib -I $(INTF_DIR)
+CFLAGS := -Wall -O2 -ffreestanding -I $(INTF_DIR)
 AFLAGS := -f elf64
 LFLAGS := -nostdlib
 OFLAGS := -O binary
+GFLAGS := /usr/lib/grub/i386-pc
 
 X86_64_LINKER := targets/x86_64/linker.ld
 
@@ -33,8 +33,9 @@ X86_64_OBJ := $(X86_64_BOOT_SRC:.asm=.o) $(X86_64_IMPL_SRC:.c=.o)
 $(TARGET): $(X86_64_OBJ)
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(DIST_DIR)
-	$(LD) $(LFLAGS) -T $(X86_64_LINKER) $(X86_64_OBJ) -o $(BUILD_DIR)/$(ELF)
-	$(COPIER) $(OFLAGS) $(BUILD_DIR)/$(ELF) $(DIST_DIR)/$@
+	$(LD) $(LFLAGS) -T $(X86_64_LINKER) $(X86_64_OBJ) -o $(ELF)
+	cp $(ELF) targets/x86_64/iso/boot/kernel.bin
+	$(GRUB) $(GFLAGS) -o $@ targets/x86_64/iso
 	
 
 %.o: %.asm
@@ -44,11 +45,11 @@ $(TARGET): $(X86_64_OBJ)
 	$(CC) -c $(CFLAGS) -target x86_64-elf $< -o $@
 
 clean:
-	@rm -f $(X86_64_OBJ) $(BUILD_DIR)/$(ELF)
+	@rm -f $(X86_64_OBJ) $(ELF)
 	@echo Removed object files and elf
 
 realclean: clean
-	@rm -f $(DIST_DIR)/$(TARGET)
+	@rm -f $(TARGET)
 	@echo Removed kernel iso
 
 run:
