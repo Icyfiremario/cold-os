@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.fsh": "glsl",
+        "*.asm": "asm-intel-x86-generic",
+        "stdint.h": "c"
+    }
+}

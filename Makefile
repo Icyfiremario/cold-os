@@ -25,10 +25,10 @@ X86_64_LINKER := targets/x86_64/linker.ld
 KERNEL_SRC := $(wildcard $(IMPL_DIR)/kernel/*.c)
 IMPL_HDR := $(wildcard $(INTF_DIR)/*.h)
 
-X86_64_BOOT_SRC := $(wildcard $(IMPL_DIR)/x86_64/boot/*.asm)
-X86_64_IMPL_SRC := $(wildcard $(IMPL_DIR)/x86_64/*.c) $(KERNEL_SRC)
+X86_64_ASM_SRC := $(wildcard $(IMPL_DIR)/x86_64/*.asm) $(wildcard $(IMPL_DIR)/x86_64/boot/*.asm)
+X86_64_C_SRC := $(wildcard $(IMPL_DIR)/x86_64/*.c) $(KERNEL_SRC)
 
-X86_64_OBJ := $(X86_64_BOOT_SRC:.asm=.o) $(X86_64_IMPL_SRC:.c=.o)
+X86_64_OBJ := $(X86_64_ASM_SRC:.asm=.o) $(X86_64_C_SRC:.c=.o)
 
 $(TARGET): $(X86_64_OBJ)
 	mkdir -p $(BUILD_DIR)
