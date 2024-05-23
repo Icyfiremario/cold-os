@@ -1,6 +1,6 @@
-.PHONY: clean realclean run
+.PHONY: clean realclean run dump
 
-BUILD_DIR := build
+BUILD_DIR := build/x86_64
 DIST_DIR := dist/x86_64
 IMPL_DIR := src/impl
 INTF_DIR := src/intf
@@ -54,3 +54,7 @@ realclean: clean
 
 run: $(TARGET)
 	qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso
+
+dump: $(TARGET)
+	@clear
+	@objdump -Dx $(ELF)
