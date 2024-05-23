@@ -14,9 +14,9 @@ LD := ld.lld
 COPIER := llvm-objcopy
 GRUB := grub-mkrescue
 
-CFLAGS := -Wall -O2 -ffreestanding -I $(INTF_DIR)
-AFLAGS := -f elf64
-LFLAGS := -nostdlib
+CFLAGS := -g -Wall -O2 -ffreestanding -I $(INTF_DIR)
+AFLAGS := -f elf64 -g
+LFLAGS := -nostdlib -g
 OFLAGS := -O binary
 GFLAGS := /usr/lib/grub/i386-pc
 
@@ -53,7 +53,7 @@ realclean: clean
 	@echo Removed kernel iso
 
 run: $(TARGET)
-	qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso
+	qemu-system-x86_64 -S -cdrom dist/x86_64/kernel.iso -s
 
 dump: $(TARGET)
 	@clear

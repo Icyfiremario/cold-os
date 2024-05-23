@@ -1,5 +1,7 @@
 #include "idt.h"
 
+#include "print.h"
+
 typedef struct
 {
     uint16_t isr_low;
@@ -22,8 +24,6 @@ __attribute__((aligned(0x10)))
 static idt_entry_t idt[256];
 static idtr_t idtr;
 
-static bool vectors[256];
-
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags)
 {
     idt_entry_t* descriptor = &idt[vector];
@@ -39,15 +39,17 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags)
 
 void idt_init()
 {
+    print_str("Setting up IDT...\n");
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 
     for (uint8_t vector = 0; vector < 32; vector++)
     {
         idt_set_descriptor(vector, isr_stub_table[vector], 0x8E);
-        vectors[vector] = true;
     }
 
     asm volatile ("lidt %0" : : "m"(idtr));
     asm volatile ("sti");
+
+    print_str("IDT setup.\n");
 }
