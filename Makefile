@@ -33,7 +33,7 @@ X86_64_OBJ := $(X86_64_ASM_SRC:.asm=.o) $(X86_64_C_SRC:.c=.o)
 $(TARGET): $(X86_64_OBJ)
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(DIST_DIR)
-	$(LD) $(LFLAGS) -T $(X86_64_LINKER) $(X86_64_OBJ) -o $(ELF)
+	$(LD) $(LFLAGS) -m elf_x86_64 -T $(X86_64_LINKER) $(X86_64_OBJ) -o $(ELF)
 	cp $(ELF) targets/x86_64/iso/boot/kernel.bin
 	$(GRUB) $(GFLAGS) -o $@ targets/x86_64/iso
 	
@@ -57,4 +57,4 @@ run: $(TARGET)
 
 dump: $(TARGET)
 	@clear
-	@objdump -Dx $(ELF)
+	@llvm-objdump -Dx $(ELF)

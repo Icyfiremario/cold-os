@@ -1,9 +1,9 @@
+#include "isr.h"
 
-#include "print.h"
-
-__attribute__((noreturn))
-void exception_handler(void);
-void exception_handler()
+[[noreturn]]
+void exception_handler(void)
 {
-    __asm__ volatile ("cli; hlt");
+    print_str("Exception called!");
+    for(;;);
+    asm volatile ("cli; hlt"); // Hang the CPU
 }
