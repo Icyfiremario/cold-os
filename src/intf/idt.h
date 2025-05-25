@@ -2,39 +2,31 @@
 
 // STD
 #include <stdint.h>
-#include <stdbool.h>
+#include <stddef.h>
 
-// Project
-#include "print.h"
+#define MAX_IDT_ENTRIES 256
 
-#define IDT_MAX_ENTRIES 256
-#define GDT_KERNEL_CS 0x08
-
-typedef struct 
+typedef struct
 {
-    uint16_t isr_low; // Lower 16 bits of ISR address
-    uint16_t kernel_cs; // GDT segment selector
+    uint16_t offset_low;
+    uint16_t selector;
     uint8_t ist;
-    uint8_t attributes;
-    uint16_t isr_mid;
-    uint32_t isr_high;
-    uint32_t reserved;
+    uint8_t flags;
+    uint16_t offset_middle;
+    uint32_t offset_high;
+    uint32_t zero;
 } __attribute__((packed)) idt_entry_t;
 
-typedef struct 
+typedef struct
 {
     uint16_t limit;
     uint64_t base;
 } __attribute__((packed)) idtr_t;
 
+static idt_entry_t idt[MAX_IDT_ENTRIES];
 static idtr_t idtr;
-
-__attribute__((aligned(0x10)))
-static idt_entry_t idt[256];
-
-static bool vectors[IDT_MAX_ENTRIES];
 
 extern void* isr_stub_table[];
 
-void idt_init(void);
-void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);
+void set_idt_entry(uint8_t vector, void* handler, uint8_t dpl);
+void init_idt(void);

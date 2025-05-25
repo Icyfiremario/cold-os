@@ -24,13 +24,13 @@ void clear_row(size_t row) {
     }
 }
 
-void print_clear() {
+void print_clear(void) {
     for (size_t i = 0; i < NUM_ROWS; i++) {
         clear_row(i);
     }
 }
 
-void print_newline() {
+void print_newline(void) {
     col = 0;
 
     if (row < NUM_ROWS - 1) {
@@ -48,7 +48,7 @@ void print_newline() {
     clear_row(NUM_COLS - 1);
 }
 
-void print_char(char character) {
+void print_char(const char character) {
     if (character == '\n') {
         print_newline();
         return;
@@ -66,7 +66,7 @@ void print_char(char character) {
     col++;
 }
 
-void print_str(char* str) {
+void print_str(const char* str) {
     for (size_t i = 0; 1; i++) {
         char character = (uint8_t) str[i];
 
