@@ -43,7 +43,7 @@ void kernel_panic(struct interrupt_frame* frame)
 {
     set_terminal_color(PRINT_COLOR_WHITE, PRINT_COLOR_BLUE);
     terminal_clear();
-    mini_printf("---KERNEL PANIC---\n");
+    mini_printf("--- AUTO KERNEL PANIC ---\n");
     mini_printf("ISR VECTOR: %d %s\n", frame->vector_number, error_id[frame->vector_number]);
     mini_printf("ERROR CODE: %x\n", frame->error_code);
     mini_printf("Registers:\n");

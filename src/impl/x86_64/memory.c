@@ -1,6 +1,6 @@
 #include "memory.h"
 
-uint64_t* bitmap;
+uint64_t* bitmap = &bitmap_start;
 uint64_t total_pages;
 
 void pmm_set_bit(uint64_t index)
@@ -46,8 +46,8 @@ void reserve_critical_regions(void)
     }
 
     uint64_t bitmap_size = (total_pages / 8);
-    uint64_t bitmap_end = 0x200000 + bitmap_size;
-    for (uint64_t addr = 0x200000; addr < bitmap_end; addr += PAGE_SIZE)
+    uint64_t real_end = (uint64_t)&kernel_end + bitmap_size;
+    for (uint64_t addr = (uint64_t)&kernel_end; addr < real_end; addr += PAGE_SIZE)
     {
         pmm_set_bit(addr / PAGE_SIZE);
     }
@@ -73,9 +73,10 @@ void init_pmm(void)
         }
     }
 
-    if (!mmap) return;
-
-    bitmap = (uint64_t*)&bitmap_start;
+    if (!mmap)
+    {
+        call_panic("Multiboot2 Memory map not found!");
+    }
 
     uint32_t max_addr = 0;
     uint32_t entry_count = (mmap->size - sizeof(struct multiboot_tag_mmap)) / mmap->entry_size;
