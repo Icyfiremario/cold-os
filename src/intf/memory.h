@@ -7,6 +7,7 @@
 // Local
 #include "print.h"
 #include "panic.h"
+#include "io.h"
 
 #define PAGE_SIZE 4096
 #define BITS_PER_WORD 64
@@ -22,6 +23,9 @@ extern uint64_t kernel_end;
 typedef uint64_t pt_entry;
 
 #define PTE_PRESENT (1ULL << 0)
+#define PTE_WRITEABLE (1ULL << 1)
+#define PTE_USER (1ULL << 2)
+#define PTE_FRAME 0x000FFFFFFFFFF000ULL
 
 struct multiboot_mmap_entry
 {
@@ -46,7 +50,15 @@ struct multiboot_tag_mmap
     struct multiboot_mmap_entry entries[0];
 };
 
-void kmalloc(void);
-void kfree(void);
+typedef struct malloc_header
+{
+    uint64_t size;
+    bool is_free;
+    struct malloc_header* next;
+} malloc_header_t;
+
+void* kmalloc(uint64_t size);
+void kfree(void* ptr);
+void* memset(void* dest, int ch, uint64_t count);
 
 void mem_init(void);

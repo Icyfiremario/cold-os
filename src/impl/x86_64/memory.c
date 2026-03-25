@@ -3,6 +3,13 @@
 uint64_t* bitmap = &bitmap_start;
 uint64_t total_pages;
 
+uint64_t heap_virtual_top = 0x40000000;
+
+static malloc_header_t* heap_start = NULL;
+
+uint64_t next_free_byte = 0;
+uint64_t current_page_limit = 0;
+
 void pmm_set_bit(uint64_t index)
 {
     bitmap[index / BITS_PER_WORD] |= (1ULL << (index % BITS_PER_WORD));
@@ -111,9 +118,114 @@ void init_pmm(void)
     reserve_critical_regions();
 }
 
-void init_vmm(void)
+void* memset(void* dest, int ch, uint64_t count)
 {
-    
+    uint8_t* ptr = (uint8_t*)dest;
+    while (count--)
+    {
+        *ptr++ = (uint8_t)ch;
+    }
+
+    return dest;
+}
+
+pt_entry* get_next_table(pt_entry* entry, bool create)
+{
+    if (*entry & PTE_PRESENT)
+    {
+        return (pt_entry*)(*entry & PTE_FRAME);
+    }
+
+    if (!create) return NULL;
+
+    uint64_t new_table_phys = pmm_alloc_frame();
+    memset((void*)new_table_phys, 0, PAGE_SIZE);
+    *entry = new_table_phys | PTE_PRESENT | PTE_WRITEABLE;
+
+    return (pt_entry*)new_table_phys;
+}
+
+void vmm_map_page(uint64_t virtual_addr, uint64_t physical_addr, uint64_t flags)
+{
+    uint64_t pml4_phys = get_current_cr3() & ~0xFFFULL;
+    uint64_t* pml4 = (uint64_t*)pml4_phys;
+
+    uint64_t pml4_idx = (virtual_addr >> 39) & 0x1FF;
+    uint64_t pdpt_idx = (virtual_addr >> 30) & 0x1FF;
+    uint64_t pd_idx = (virtual_addr >> 21) & 0x1FF;
+    uint64_t pt_idx = (virtual_addr >> 12) & 0x1FF;
+
+    //pt_entry* pml4 = (pt_entry*)get_current_cr3();
+    pt_entry* pdpt = get_next_table(&pml4[pml4_idx], true);
+    pt_entry* pd = get_next_table(&pdpt[pdpt_idx], true);
+    pt_entry* pt = get_next_table(&pd[pd_idx], true);
+
+    pt[pt_idx] = physical_addr | flags | PTE_PRESENT;
+
+    flush_tlb(virtual_addr);
+}
+
+void* vmm_alloc_pages(uint64_t count)
+{
+    void* v_addr_start = (void*)heap_virtual_top;
+
+    for (uint64_t i = 0; i < count; i++)
+    {
+        uint64_t phys_frame = pmm_alloc_frame();
+        if (phys_frame == 0) return NULL;
+
+        vmm_map_page(heap_virtual_top, phys_frame, 0x3);
+
+        heap_virtual_top += PAGE_SIZE;
+    }
+
+    return v_addr_start;
+}
+
+void* kmalloc(uint64_t size)
+{
+    size = (size + 7) & ~7;
+
+    malloc_header_t* current = heap_start;
+    while (current)
+    {
+        if (current->is_free && current->size >= size)
+        {
+            current->is_free = false;
+            return (void*)(current + 1);
+        }
+
+        if (!current->next) break;
+        current = current->next;
+    }
+
+    uint64_t pages_needed = ((size + sizeof(malloc_header_t)) / PAGE_SIZE) + 1;
+    malloc_header_t* new_block = (malloc_header_t*)vmm_alloc_pages(pages_needed);
+
+    if (!new_block) return NULL;
+
+    new_block->size = (pages_needed * PAGE_SIZE) - sizeof(malloc_header_t);
+    new_block->is_free = false;
+    new_block->next = NULL;
+
+    if (!heap_start)
+    {
+        heap_start = new_block;
+    }
+    else
+    {
+        current->next = new_block;
+    }
+
+    return (void*)(new_block + 1);
+}
+
+void kfree(void* ptr)
+{
+    if (!ptr) return;
+
+    malloc_header_t* header = (malloc_header_t*)ptr - 1;
+    header->is_free = true;
 }
 
 void mem_init(void)
