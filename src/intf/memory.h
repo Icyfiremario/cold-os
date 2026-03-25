@@ -20,7 +20,7 @@ extern uint64_t kernel_end;
 // Typedef
 typedef uint64_t pt_entry;
 
-#define
+#define PTE_PRESENT (1ULL << 0)
 
 struct multiboot_mmap_entry
 {
