@@ -71,9 +71,20 @@ setup_page_tables:
     or eax, 0b11
     mov [page_table_l3], eax
 
+    mov eax, page_table_l2_2
+    or eax, 0b11
+    mov [page_table_l2_3 + 8], eax
+
+    mov eax, page_table_l2_3
+    or eax, 0b11
+    mov [page_table_l2_3 + 16], eax
+
+    mov eax, page_table_l2_4
+    or eax, 0b11
+    mov [page_table_l2_3 + 24], eax
+
     mov ecx, 0
 .loop:
-
     mov eax, 0x200000
     mul ecx
     or eax, 0b10000011
@@ -120,6 +131,12 @@ page_table_l4:
 page_table_l3:
     resb 4096
 page_table_l2:
+    resb 4096
+page_table_l2_2:
+    resb 4096
+page_table_l2_3:
+    resb 4096
+page_table_l2_4:
     resb 4096
 
 align 8

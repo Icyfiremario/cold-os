@@ -70,6 +70,12 @@ void kernel_panic(struct interrupt_frame* frame)
     mini_printf(" RSP:    %x\n", frame->rsp);
     mini_printf(" SS:     %x\n", frame->ss);
 
+    if (frame->vector_number == 14)
+    {
+        uint64_t cr2;
+        __asm__ volatile("mov %%cr2, %0" : "=r"(cr2));
+        mini_printf("CR2 (Faulting Addr): %x\n", cr2);
+    }
     
     __asm__ volatile("cli");
     while(1)

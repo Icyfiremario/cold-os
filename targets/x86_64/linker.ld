@@ -31,5 +31,8 @@ SECTIONS
         *(COMMON)
     }
 
+    . = 2M;
+    bitmap_start = .;
+
     kernel_end = .;
 }

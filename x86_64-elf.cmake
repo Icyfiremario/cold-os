@@ -5,7 +5,7 @@ set(CMAKE_C_COMPILER clang)
 set(CMAKE_ASM_NASM_COMPILER nasm)
 
 set(TARGET_TRIPLET x86_64-elf)
-set(COMPILE_FLAGS "-target ${TARGET_TRIPLET} -ffreestanding -mno-red-zone -fno-stack-protector")
+set(COMPILE_FLAGS "-target ${TARGET_TRIPLET} -ffreestanding -mno-red-zone -fno-stack-protector -fno-builtin -mno-sse -mno-mmx")
 
 set(CMAKE_C_FLAGS_INIT "${COMPILE_FLAGS}")
 set(CMAKE_ASM_NASM_FLAGS "-f elf64")

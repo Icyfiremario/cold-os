@@ -22,6 +22,9 @@ void kernel_main(void)
     __asm__ volatile("sti");
     mini_printf("Interrupts enabled.\n");
 
+    mem_init();
+    mini_printf("Memory mapped and ready for allocation.\n");
+
     set_terminal_color(PRINT_COLOR_GREEN, PRINT_COLOR_BLACK);
     mini_printf("OS Booted!\n");
 
