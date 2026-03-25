@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "x86_64-kernel",
+      "displayName": "x86_64 Kernel (Bare Metal)",
+      "description": "Cross-compile for x86_64 using local toolchain file",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/x86_64-elf.cmake",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ]
+}
