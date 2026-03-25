@@ -9,7 +9,7 @@ void init_pmm()
         if (tag->type == 6)
         {
             struct multiboot_tag_mmap* mmap = (struct multiboot_tag_mmap*)tag;
-            for (int i = 0; i <(mmap->size - sizeof(*mmap)) / mmap->entry_size; i++)
+            for (int i = 0; i < (mmap->size - sizeof(*mmap)) / mmap->entry_size; i++)
             {
                 if (mmap->entries[i].type == 1)
                 {
