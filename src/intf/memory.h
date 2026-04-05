@@ -47,7 +47,7 @@ struct multiboot_tag_mmap
     uint32_t size;
     uint32_t entry_size;
     uint32_t entry_version;
-    struct multiboot_mmap_entry entries[0];
+    struct multiboot_mmap_entry entries[];
 };
 
 typedef struct malloc_header
