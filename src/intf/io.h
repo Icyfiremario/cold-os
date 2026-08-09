@@ -46,6 +46,15 @@ static inline uint64_t cpu_read_msr(uint32_t msr)
     return ((uint64_t)high << 32) | low;
 }
 
+static inline void cpu_read_msr_ptr(uint32_t msr, uint32_t* low, uint32_t* high)
+{
+    __asm__ volatile (
+        "rdmsr"
+        : "=a"(*low), "=d"(*high)
+        : "c"(msr)
+    );
+}
+
 static inline uint64_t get_current_cr3(void)
 {
     uint64_t cr3;
@@ -61,4 +70,28 @@ static inline void set_current_cr3(uint64_t cr3)
 static inline void flush_tlb(uint64_t addr)
 {
     __asm__ volatile("invlpg (%0)" : : "r"(addr) : "memory");
+}
+
+static inline void cpuid(uint32_t leaf, uint32_t* eax, uint32_t* ebx, uint32_t* ecx, uint32_t* edx)
+{
+    __asm__ volatile ("cpuid" 
+        :   "=a" (*eax),
+            "=b" (*ebx),
+            "=c" (*ecx),
+            "=d" (*edx)
+        :   "a" (leaf),
+            "c" (0)
+        );
+}
+
+static inline void cpuid_count(uint32_t leaf, uint32_t subleaf, uint32_t* eax, uint32_t* ebx, uint32_t* ecx, uint32_t* edx)
+{
+    __asm__ volatile ("cpuid" 
+        :   "=a" (*eax),
+            "=b" (*ebx),
+            "=c" (*ecx),
+            "=d" (*edx)
+        :   "a" (leaf),
+            "c" (subleaf)
+        );
 }

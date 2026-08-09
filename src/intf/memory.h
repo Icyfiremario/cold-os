@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 // Local
+#include "multiboot.h"
 #include "print.h"
 #include "panic.h"
 #include "io.h"
@@ -13,7 +14,7 @@
 #define BITS_PER_WORD 64
 
 // Externs
-extern uint64_t multiboot_ptr;
+//extern uint64_t multiboot_ptr;
 
 extern uint64_t kernel_start;
 extern uint64_t bitmap_start;
@@ -33,12 +34,6 @@ struct multiboot_mmap_entry
     uint64_t len;
     uint32_t type;
     uint32_t zero;
-};
-
-struct multiboot_tag
-{
-    uint32_t type;
-    uint32_t size;
 };
 
 struct multiboot_tag_mmap

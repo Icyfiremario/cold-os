@@ -37,9 +37,9 @@ void pic_init(int offset1, int offset2)
 
 void pic_disable(void)
 {
-    outb(PIC1_COMMAND, 0xFF);
+    outb(PIC1_DATA, 0xFF);
     io_wait();
-    outb(PIC2_COMMAND, 0xFF);
+    outb(PIC2_DATA, 0xFF);
     io_wait();
 
     pic_enabled = false;

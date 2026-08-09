@@ -6,6 +6,7 @@
 #include "keyboard.h"
 #include "io.h"
 #include "pic.h"
+#include "timer.h"
 
 struct interrupt_frame
 {
@@ -46,6 +47,7 @@ void kernel_panic(struct interrupt_frame* frame)
     mini_printf("--- AUTO KERNEL PANIC ---\n");
     mini_printf("ISR VECTOR: %d %s\n", frame->vector_number, error_id[frame->vector_number]);
     mini_printf("ERROR CODE: %x\n", frame->error_code);
+    mini_printf("LOOPS AT ERR: %d\n", get_loops());
     mini_printf("Registers:\n");
     mini_printf(" R15:    %x\n", frame->r15);
     mini_printf(" R14:    %x\n", frame->r14);
@@ -96,6 +98,9 @@ void idt_handler(struct interrupt_frame* frame)
         {
             case 0:
                 kernel_panic(frame);
+                break;
+            case 32:
+                update_loops();
                 break;
             case 33:
                 keyboard_handler_main();

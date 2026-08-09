@@ -4,6 +4,8 @@
 
 // local
 #include "pic.h"
+#include "acpi.h"
+#include "apic.h"
 #include "idt.h"
 #include "memory.h"
 #include "print.h"
@@ -24,6 +26,14 @@ void kernel_main(void)
 
     mem_init();
     mini_printf("Memory manager initialized\n");
+
+    parse_multiboot_acpi();
+
+    if (check_apic())
+    {
+        mini_printf("APIC Support found.\n");
+
+    }
 
     set_terminal_color(PRINT_COLOR_GREEN, PRINT_COLOR_BLACK);
     mini_printf("OS Booted!\n");
