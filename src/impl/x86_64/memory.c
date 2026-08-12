@@ -155,7 +155,7 @@ void vmm_map_page(uint64_t virtual_addr, uint64_t physical_addr, uint64_t flags)
     uint64_t pd_idx = (virtual_addr >> 21) & 0x1FF;
     uint64_t pt_idx = (virtual_addr >> 12) & 0x1FF;
 
-    //pt_entry* pml4 = (pt_entry*)get_current_cr3();
+    //pt_entry* pml4_cr3 = (pt_entry*)get_current_cr3();
     pt_entry* pdpt = get_next_table(&pml4[pml4_idx], true);
     pt_entry* pd = get_next_table(&pdpt[pdpt_idx], true);
     pt_entry* pt = get_next_table(&pd[pd_idx], true);

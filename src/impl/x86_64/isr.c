@@ -47,7 +47,7 @@ void kernel_panic(struct interrupt_frame* frame)
     mini_printf("--- AUTO KERNEL PANIC ---\n");
     mini_printf("ISR VECTOR: %d %s\n", frame->vector_number, error_id[frame->vector_number]);
     mini_printf("ERROR CODE: %x\n", frame->error_code);
-    mini_printf("LOOPS AT ERR: %d\n", get_loops());
+    //mini_printf("LOOPS AT ERR: %d\n", get_loops());
     mini_printf("Registers:\n");
     mini_printf(" R15:    %x\n", frame->r15);
     mini_printf(" R14:    %x\n", frame->r14);

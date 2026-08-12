@@ -14,4 +14,5 @@ struct multiboot_tag_acpi
     uint8_t rsdp[8];
 };
 
-void parse_multiboot_acpi(void);
+//void parse_multiboot_acpi(void);
+void* get_acpi_ptr(void);

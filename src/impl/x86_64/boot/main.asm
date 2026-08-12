@@ -141,7 +141,9 @@ page_table_l2_4:
 
 align 8
 global multiboot_ptr
+global kernel_integrity_check
 multiboot_ptr: resq 1
+kernel_integrity_check: resq 0
 
 align 16
 stack_bottom:

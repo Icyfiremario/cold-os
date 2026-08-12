@@ -27,3 +27,10 @@ void parse_multiboot_acpi(void)
         }
     }
 }
+
+void* get_acpi_ptr(void)
+{
+    parse_multiboot_acpi();
+
+    return rsdp_addr;
+}

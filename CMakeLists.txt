@@ -44,6 +44,6 @@ add_custom_target(iso ALL
 )
 
 add_custom_target(run
-    COMMAND qemu-system-x86_64 -cdrom ${KERNEL_ISO} -s
+    COMMAND qemu-system-x86_64 -cdrom ${KERNEL_ISO} -s -S
     DEPENDS iso
 )

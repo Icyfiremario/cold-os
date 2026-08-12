@@ -9,6 +9,7 @@
 #include "idt.h"
 #include "memory.h"
 #include "print.h"
+#include "panic.h"
 
 void kernel_main(void)
 {
@@ -27,12 +28,9 @@ void kernel_main(void)
     mem_init();
     mini_printf("Memory manager initialized\n");
 
-    parse_multiboot_acpi();
-
     if (check_apic())
     {
         mini_printf("APIC Support found.\n");
-
     }
 
     set_terminal_color(PRINT_COLOR_GREEN, PRINT_COLOR_BLACK);
